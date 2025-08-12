@@ -10,6 +10,7 @@ import type { VersionInfo } from './types';
 import { safeCopy } from './utils/fsExtra';
 import { createDownloadProgress } from './progress';
 import { FileProgressTracker } from './file-progress';
+import { pathExists } from 'fs-extra';
 
 const KEEP_ITEMS: [string, MergeInfo][] = [
   ['allowlist.json', {}],
@@ -126,8 +127,8 @@ export class Installer {
         }
       }
       const oldPath = path.join(this.cacheManager.serverFolder, paths, item.name);
-      
-      const exists = await fs.exists(oldPath);
+
+      const exists = await pathExists(oldPath);
 
       if (result === undefined || !exists) { // replace
         tracker.addItem(item.name, 'REPLACE');
