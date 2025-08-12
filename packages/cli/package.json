@@ -1,0 +1,29 @@
+{
+  "name": "@bds-utils/cli",
+  "description": "Utility CLI for Bedrock Dedicated Server",
+  "type": "module",
+  "bin": {
+    "bds-utils": "./dist/main.js"
+  },
+  "scripts": {
+    "build": "bun build src/main.ts --outdir dist --target node --format esm",
+    "typecheck": "tsc --noEmit",
+    "dev": "bun src/main.ts",
+    "prepublishOnly": "bun run typecheck && bun run build"
+  },
+  "keywords": [
+    "minecraft",
+    "bedrock",
+    "server",
+    "bds"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tutinoko2048/bds-utils.git",
+    "directory": "packages/cli"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
