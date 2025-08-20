@@ -8,7 +8,7 @@
   "scripts": {
     "build": "bun build src/main.ts --outdir dist --target node --format esm",
     "typecheck": "tsc --noEmit",
-    "dev": "bun src/main.ts",
+    "dev": "bun src/main.ts -c ../../test",
     "sync-version": "bun scripts/sync-version.ts",
     "prepublishOnly": "bun run typecheck && bun run build"
   },

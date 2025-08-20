@@ -1,6 +1,10 @@
 {
   "folders": [
     {
+      "name": "CLI",
+      "path": "../packages/cli"
+    },
+    {
       "name": "Updater",
       "path": "../packages/updater-core"
     },
