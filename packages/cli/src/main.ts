@@ -1,7 +1,8 @@
 import * as path from 'node:path';
 import { Command } from 'commander';
 import { select } from '@inquirer/prompts';
-import { experimentEditor } from './tools';
+import * as pc from 'picocolors';
+import { experimentEditor, serverUpdater } from './tools';
 
 import packageJson from '../package.json' with { type: "json" };
 import { levelDatRestorer } from './tools/leveldat-restorer';
@@ -23,13 +24,23 @@ try {
     process.exit(0);
   }
 
-  console.error('Error occurred while using the tool:', debug ? error : error.message);
+  console.error('');
+  console.error(pc.red(`❌ ${error.message}`));
+  if (debug) {
+    console.error(pc.dim('\nStack trace:'));
+    console.error(pc.dim(error.stack));
+  }
 }
 
 async function selectTool(): Promise<void> {
   const tool = await select({
     message: 'Select a tool to use:',
     choices: [
+      {
+        name: 'Server Updater',
+        description: 'Change/update the version of Bedrock Server',
+        value: serverUpdater
+      },
       {
         name: 'Experimental Settings Editor',
         description: 'Edit experimental settings for world',

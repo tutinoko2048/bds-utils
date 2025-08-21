@@ -150,6 +150,10 @@ export async function main(): Promise<number> {
     return 0;
 
   } catch (err: any) {
+    if (err.name === 'ExitPromptError') {
+      process.exit(0);
+    }
+    
     console.error('');
     console.error(formatError(err.message));
     if (options.debug) {

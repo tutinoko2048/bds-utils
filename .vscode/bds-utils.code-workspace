@@ -22,7 +22,7 @@
     },
     {
       "name": "Repository",
-      "path": "../"
+      "path": ".."
     }
   ]
 }
