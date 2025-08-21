@@ -2,10 +2,9 @@ import * as path from 'node:path';
 import { Command } from 'commander';
 import { select } from '@inquirer/prompts';
 import * as pc from 'picocolors';
-import { experimentEditor, serverUpdater } from './tools';
+import { experimentEditor, serverUpdater, levelDatRestorer, addonManager } from './tools';
 
 import packageJson from '../package.json' with { type: "json" };
-import { levelDatRestorer } from './tools/leveldat-restorer';
 
 const program = createProgram();
 program.parse(process.argv);
@@ -27,8 +26,8 @@ try {
   console.error('');
   console.error(pc.red(`❌ ${error.message}`));
   if (debug) {
-    console.error(pc.dim('\nStack trace:'));
-    console.error(pc.dim(error.stack));
+    console.error(pc.dim(pc.white('\nStack trace:')));
+    console.error(pc.dim(pc.white(error.stack)));
   }
 }
 
@@ -40,6 +39,11 @@ async function selectTool(): Promise<void> {
         name: 'Server Updater',
         description: 'Change/update the version of Bedrock Server',
         value: serverUpdater
+      },
+      {
+        name: 'Addon Manager',
+        description: 'Manage addons for Bedrock Server',
+        value: addonManager
       },
       {
         name: 'Experimental Settings Editor',

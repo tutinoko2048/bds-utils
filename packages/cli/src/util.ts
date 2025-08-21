@@ -5,7 +5,7 @@ export function tryReadFileSync(filePath: string): string | undefined {
   try {
     return fs.readFileSync(filePath, 'utf8');
   } catch (error) {
-    console.error(`Error reading file at ${filePath}:`, error);
+    // console.error(`Error reading file at ${filePath}:`, error);
     return undefined;
   }
 }

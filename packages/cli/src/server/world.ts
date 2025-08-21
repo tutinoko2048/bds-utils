@@ -3,11 +3,13 @@ import * as path from 'node:path';
 import * as pc from 'picocolors';
 import { formatPath, tryReadFileSync } from '../util';
 import { LevelDat } from './level-dat';
+import { AddonManager } from './addon';
 
 export class World {
   public readonly name: string;
   public readonly displayName?: string;
   public readonly levelDat: LevelDat;
+  public readonly addons: AddonManager;
 
   constructor(
     serverPath: string,
@@ -22,6 +24,7 @@ export class World {
     if (!this.displayName) console.warn(pc.yellow('[World] levelname.txt not found'));
 
     this.levelDat = new LevelDat(path.join(this.worldPath, 'level.dat'));
+    this.addons = new AddonManager(serverPath, this.worldPath);
   }
 
   static isWorldDirectory(dir: string): boolean {
