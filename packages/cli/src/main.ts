@@ -54,6 +54,11 @@ async function selectTool(): Promise<void> {
         name: 'Level.dat Restorer',
         description: 'Restore the level.dat file from level.dat_old',
         value: levelDatRestorer,
+      },
+      {
+        name: `${pc.red('✘')} Exit`,
+        description: 'Exit this program',
+        value: () => process.exit()
       }
     ],
   });
