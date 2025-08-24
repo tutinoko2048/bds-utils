@@ -47,8 +47,9 @@ class ServerUpdater {
     const spinner = createSpinner('Checking for updates...');
 
     spinner.start();
-    const { updateAvailable, latestVersion } = await this.checkUpdate();
-    spinner.stop();
+    const { updateAvailable, latestVersion } = await this.checkUpdate().finally(() => {
+      spinner.stop();
+    });
 
     if (updateAvailable) {
       console.log(formatInfo(`New version available: ${pc.bold(latestVersion)}`));
@@ -122,7 +123,13 @@ class ServerUpdater {
   }
 
   async fetchBuildInfo(): Promise<ServerBuildInfo> {
-    const res = await fetch('https://raw.githubusercontent.com/Bedrock-OSS/BDS-Versions/main/versions.json');
+    let res: Response;
+    try {
+      res = await fetch('https://raw.githubusercontent.com/Bedrock-OSS/BDS-Versions/main/versions.json');
+    } catch (e: any) {
+      throw new Error(e.message);
+    }
+    
     if (!res.ok) {
       throw new Error(`Failed to fetch version information: ${res.status} ${res.statusText}`);
     }
