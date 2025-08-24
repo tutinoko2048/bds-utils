@@ -1,12 +1,21 @@
-import { version } from 'bun';
+import * as path from 'node:path';
+import * as pc from 'picocolors';
 import { BedrockServer } from '../server';
+import { selectWorld } from '../prompts';
 
 export async function addonManager(cwd: string): Promise<void> {
+  console.log(pc.bold(pc.green('🛠️  Addon Manager')));
+  
   const server = new BedrockServer(cwd);
-  const world = server.getCurrentWorld();
-  console.log(world.addons.getAllAddons().map(addon => ({
-    path: addon.addonPath,
+
+  const world = await selectWorld(server);
+  
+  const addons = await world.addons.getAllAddons();
+  
+  console.log(addons.map(addon => ({
     name: `[${addon.type}] ${addon.getName()}@${addon.getVersion()}`,
-    uuid: addon.getUuid()
+    uuid: addon.getUuid(),
+    path: addon.addonPath,
+    relativePath: path.relative(cwd, addon.addonPath)
   })));
 }

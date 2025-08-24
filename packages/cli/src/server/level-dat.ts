@@ -45,7 +45,7 @@ export class LevelDat {
   }
   
   save() {
-    if (!this.isLoaded) throw new Error('Level.dat is not loaded');
+    if (!this.isLoaded) throw new Error('level.dat is not loaded');
     if (!this.header || !this.data) throw new Error('Cannot save level.dat: missing header or data');
 
     const nbtStream = new BinaryStream();
