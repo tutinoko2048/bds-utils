@@ -4,6 +4,7 @@ import * as jsonc from 'jsonc-parser';
 import { Addon } from './addon';
 import { tryReadFileSync } from '../../util';
 import { PackStack } from './types';
+import { ManifestNotFoundError } from './errors';
 
 export class AddonManager {
   public readonly enabledBehaviorPacks: PackStack[] = [];
@@ -27,42 +28,50 @@ export class AddonManager {
     fs.writeFileSync(path.join(this.worldPath, 'world_resource_packs.json'), json);
   }
 
-  getAllAddons() {
-    return [
-      ...this.getDevelopmentBehaviorPacks(),
-      ...this.getWorldBehaviorPacks(),
-      ...this.getDevelopmentResourcePacks(),
-      ...this.getWorldResourcePacks(),
-    ];
+  async getAllAddons() {
+    return (await Promise.all([
+      this.getDevelopmentBehaviorPacks(),
+      this.getWorldBehaviorPacks(),
+      this.getDevelopmentResourcePacks(),
+      this.getWorldResourcePacks(),
+    ])).flat();
   }
 
-  private getDevelopmentBehaviorPacks() {
-    return this.getDirectoryPacks(path.join(this.serverPath, 'development_behavior_packs'), 'behavior');
-  }
-  
-  private getDevelopmentResourcePacks() {
-    return this.getDirectoryPacks(path.join(this.serverPath, 'development_resource_packs'), 'resource');
+  private async getDevelopmentBehaviorPacks() {
+    return await this.getDirectoryPacks(path.join(this.serverPath, 'development_behavior_packs'), 'behavior');
   }
 
-  private getWorldBehaviorPacks() {
-    return this.getDirectoryPacks(path.join(this.worldPath, 'behavior_packs'), 'behavior');
+  private async getDevelopmentResourcePacks() {
+    return await this.getDirectoryPacks(path.join(this.serverPath, 'development_resource_packs'), 'resource');
   }
 
-  private getWorldResourcePacks() {
-    return this.getDirectoryPacks(path.join(this.worldPath, 'resource_packs'), 'resource');
+  private async getWorldBehaviorPacks() {
+    return await this.getDirectoryPacks(path.join(this.worldPath, 'behavior_packs'), 'behavior');
   }
-  
-  private getDirectoryPacks(directory: string, type: 'resource' | 'behavior'): Addon[] {
+
+  private async getWorldResourcePacks() {
+    return await this.getDirectoryPacks(path.join(this.worldPath, 'resource_packs'), 'resource');
+  }
+
+  private async getDirectoryPacks(directory: string, type: 'resource' | 'behavior'): Promise<Addon[]> {
     const packs: Addon[] = [];
     if (!fs.existsSync(directory)) return packs;
 
-    for (const dirent of fs.readdirSync(directory, { withFileTypes: true })) {
-      if (!dirent.isDirectory()) continue;
+    const load = async (dirent: fs.Dirent) => {
       const addonPath = path.join(dirent.parentPath, dirent.name);
-      if (!Addon.isAddonDirectory(addonPath)) continue;
-      const addon = new Addon(addonPath, type);
-      packs.push(addon);
-    }
+      try {
+        const manifest = await Addon.readManifest(dirent);
+        const addon = new Addon(addonPath, type, manifest);
+        packs.push(addon);
+      } catch (error) {
+        if (!(error instanceof ManifestNotFoundError)) {
+          console.error(`[AddonManager] Failed to load addon from ${addonPath}:\n`, error);
+        }
+      }
+    };
+
+    const promises = fs.readdirSync(directory, { withFileTypes: true }).map(load);
+    await Promise.all(promises);
 
     return packs;
   }
