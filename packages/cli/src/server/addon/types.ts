@@ -40,3 +40,5 @@ export interface PackStack {
   pack_id: Uuid;
   version: Version;
 }
+
+export type AddonType = 'behavior' | 'resource';

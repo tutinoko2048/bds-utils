@@ -2,8 +2,9 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as jsonc from 'jsonc-parser';
 import JSZip from 'jszip';
-import { Manifest, Uuid } from './types';
+import { Manifest, Uuid, Version } from './types';
 import { ManifestNotFoundError } from './errors';
+import { normalizeVersion } from '../../util';
 
 export class Addon {
   constructor(
@@ -17,8 +18,7 @@ export class Addon {
   }
 
   getVersion(): string {
-    const ver = this.manifest.header.version;
-    return typeof ver === 'string' ? ver : ver.join('.');
+    return normalizeVersion(this.manifest.header.version);
   }
 
   getUuid(): Uuid {
@@ -50,6 +50,13 @@ export class Addon {
     }
 
     return jsonc.parse(content);
+  }
+
+  equals(uuid: Uuid, version: Version) {
+    return (
+      uuid === this.getUuid() &&
+      normalizeVersion(version) === this.getVersion()
+    );
   }
 
   toJSON() {

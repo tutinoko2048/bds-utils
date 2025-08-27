@@ -3,12 +3,12 @@ import * as path from 'node:path';
 import * as jsonc from 'jsonc-parser';
 import { Addon } from './addon';
 import { tryReadFileSync } from '../../util';
-import { PackStack } from './types';
+import { AddonType, PackStack } from './types';
 import { ManifestNotFoundError } from './errors';
 
 export class AddonManager {
-  public readonly enabledBehaviorPacks: PackStack[] = [];
-  public readonly enabledResourcePacks: PackStack[] = [];
+  private enabledBehaviorPacks: PackStack[] = [];
+  private enabledResourcePacks: PackStack[] = [];
 
   constructor(
     private readonly serverPath: string,
@@ -16,6 +16,23 @@ export class AddonManager {
   ) {
     this.loadBehaviorPacksJson();
     this.loadResourcePacksJson();
+  }
+
+  isPackEnabled(addon: Addon): boolean {
+    const currentPacks = addon.type === 'behavior' ? this.enabledBehaviorPacks : this.enabledResourcePacks;
+    return currentPacks.some((pack) => addon.equals(pack.pack_id, pack.version));
+  }
+
+  getEnabledPacks(type: AddonType) {
+    return type === 'behavior' ? this.enabledBehaviorPacks : this.enabledResourcePacks;
+  }
+
+  setEnabledPacks(type: AddonType, packs: PackStack[]) {
+    if (type === 'behavior') {
+      this.enabledBehaviorPacks = packs;
+    } else {
+      this.enabledResourcePacks = packs;
+    }
   }
 
   saveEnabledBehaviorPacks() {
@@ -28,13 +45,12 @@ export class AddonManager {
     fs.writeFileSync(path.join(this.worldPath, 'world_resource_packs.json'), json);
   }
 
-  async getAllAddons() {
-    return (await Promise.all([
-      this.getDevelopmentBehaviorPacks(),
-      this.getWorldBehaviorPacks(),
-      this.getDevelopmentResourcePacks(),
-      this.getWorldResourcePacks(),
-    ])).flat();
+  async getAddons(type: AddonType) {
+    if (type === 'behavior') {
+      return (await Promise.all([this.getDevelopmentBehaviorPacks(), this.getWorldBehaviorPacks()])).flat();
+    } else {
+      return (await Promise.all([this.getDevelopmentResourcePacks(), this.getWorldResourcePacks()])).flat();
+    }
   }
 
   private async getDevelopmentBehaviorPacks() {
@@ -53,7 +69,7 @@ export class AddonManager {
     return await this.getDirectoryPacks(path.join(this.worldPath, 'resource_packs'), 'resource');
   }
 
-  private async getDirectoryPacks(directory: string, type: 'resource' | 'behavior'): Promise<Addon[]> {
+  private async getDirectoryPacks(directory: string, type: AddonType): Promise<Addon[]> {
     const packs: Addon[] = [];
     if (!fs.existsSync(directory)) return packs;
 
@@ -82,7 +98,7 @@ export class AddonManager {
     const json = jsonc.parse(file);
     this.enabledBehaviorPacks.push(...json);
   }
-  
+
   private loadResourcePacksJson() {
     const file = tryReadFileSync(path.join(this.worldPath, 'world_resource_packs.json'));
     if (!file) return;
