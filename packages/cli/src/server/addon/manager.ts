@@ -3,31 +3,34 @@ import * as path from 'node:path';
 import * as jsonc from 'jsonc-parser';
 import { Addon } from './addon';
 import { tryReadFileSync } from '../../util';
-import { AddonType, PackStack } from './types';
+import { AddonLocation, AddonType, PackData } from './types';
 import { ManifestNotFoundError } from './errors';
 
 export class AddonManager {
-  private enabledBehaviorPacks: PackStack[] = [];
-  private enabledResourcePacks: PackStack[] = [];
+  private readonly serverPath: string;
+  private readonly worldPath: string;
 
-  constructor(
-    private readonly serverPath: string,
-    private readonly worldPath: string
-  ) {
+  private enabledBehaviorPacks: PackData[] = [];
+  private enabledResourcePacks: PackData[] = [];
+
+  constructor(serverPath: string, worldPath: string) {
+    this.serverPath = serverPath;
+    this.worldPath = worldPath;
+
     this.loadBehaviorPacksJson();
     this.loadResourcePacksJson();
   }
 
   isPackEnabled(addon: Addon): boolean {
     const currentPacks = addon.type === 'behavior' ? this.enabledBehaviorPacks : this.enabledResourcePacks;
-    return currentPacks.some((pack) => addon.equals(pack.pack_id, pack.version));
+    return currentPacks.some((pack) => addon.equals(pack));
   }
 
   getEnabledPacks(type: AddonType) {
     return type === 'behavior' ? this.enabledBehaviorPacks : this.enabledResourcePacks;
   }
 
-  setEnabledPacks(type: AddonType, packs: PackStack[]) {
+  setEnabledPacks(type: AddonType, packs: PackData[]) {
     if (type === 'behavior') {
       this.enabledBehaviorPacks = packs;
     } else {
@@ -35,14 +38,16 @@ export class AddonManager {
     }
   }
 
-  saveEnabledBehaviorPacks() {
-    const json = JSON.stringify(this.enabledBehaviorPacks, null, 2);
-    fs.writeFileSync(path.join(this.worldPath, 'world_behavior_packs.json'), json);
-  }
-
-  saveEnabledResourcePacks() {
-    const json = JSON.stringify(this.enabledResourcePacks, null, 2);
-    fs.writeFileSync(path.join(this.worldPath, 'world_resource_packs.json'), json);
+  saveEnabledPacks(type: AddonType): string {
+    let json: string;
+    if (type === 'behavior') {
+      json = JSON.stringify(this.enabledBehaviorPacks, null, 2);
+      fs.writeFileSync(path.join(this.worldPath, 'world_behavior_packs.json'), json);
+    } else {
+      json = JSON.stringify(this.enabledResourcePacks, null, 2);
+      fs.writeFileSync(path.join(this.worldPath, 'world_resource_packs.json'), json);
+    }
+    return json;
   }
 
   async getAddons(type: AddonType) {
@@ -54,22 +59,34 @@ export class AddonManager {
   }
 
   private async getDevelopmentBehaviorPacks() {
-    return await this.getDirectoryPacks(path.join(this.serverPath, 'development_behavior_packs'), 'behavior');
+    return await this.getDirectoryPacks(
+      path.join(this.serverPath, 'development_behavior_packs'),
+      'development',
+      'behavior'
+    );
   }
 
   private async getDevelopmentResourcePacks() {
-    return await this.getDirectoryPacks(path.join(this.serverPath, 'development_resource_packs'), 'resource');
+    return await this.getDirectoryPacks(
+      path.join(this.serverPath, 'development_resource_packs'),
+      'development',
+      'resource'
+    );
   }
 
   private async getWorldBehaviorPacks() {
-    return await this.getDirectoryPacks(path.join(this.worldPath, 'behavior_packs'), 'behavior');
+    return await this.getDirectoryPacks(path.join(this.worldPath, 'behavior_packs'), 'world', 'behavior');
   }
 
   private async getWorldResourcePacks() {
-    return await this.getDirectoryPacks(path.join(this.worldPath, 'resource_packs'), 'resource');
+    return await this.getDirectoryPacks(path.join(this.worldPath, 'resource_packs'), 'world', 'resource');
   }
 
-  private async getDirectoryPacks(directory: string, type: AddonType): Promise<Addon[]> {
+  private async getDirectoryPacks(
+    directory: string,
+    location: AddonLocation,
+    type: AddonType
+  ): Promise<Addon[]> {
     const packs: Addon[] = [];
     if (!fs.existsSync(directory)) return packs;
 
@@ -77,7 +94,7 @@ export class AddonManager {
       const addonPath = path.join(dirent.parentPath, dirent.name);
       try {
         const manifest = await Addon.readManifest(dirent);
-        const addon = new Addon(addonPath, type, manifest);
+        const addon = new Addon(addonPath, location, type, manifest);
         packs.push(addon);
       } catch (error) {
         if (!(error instanceof ManifestNotFoundError)) {

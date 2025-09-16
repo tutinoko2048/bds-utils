@@ -15,9 +15,9 @@ export class World {
     serverPath: string,
     public readonly worldPath: string
   ) {
-    console.log(
-      pc.dim(`[World] World loaded from: ${formatPath(serverPath, this.worldPath)}`)
-    );
+    // console.log(
+    //   pc.dim(`[World] World loaded from: ${formatPath(serverPath, this.worldPath)}`)
+    // );
 
     this.name = path.basename(this.worldPath);
     this.displayName = tryReadFileSync(path.join(this.worldPath, 'levelname.txt'));

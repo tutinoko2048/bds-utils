@@ -1,19 +1,29 @@
 {
   "name": "@bds-utils/cli",
-  "description": "Utility CLI tool for Bedrock Dedicated Server",
-  "type": "module",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tutinoko2048/bds-utils.git",
+    "directory": "packages/cli"
+  },
+  "dependencies": {
+    "@bds-utils/updater-core": "workspace:*",
+    "@inquirer/figures": "^1.0.13",
+    "@inquirer/prompts": "^7.8.3",
+    "@serenityjs/binarystream": "^3.0.10",
+    "@serenityjs/nbt": "^0.8.10",
+    "commander": "^14.0.0",
+    "inquirer-sortable-checkbox": "^1.0.1",
+    "jsonc-parser": "^3.3.1",
+    "jszip": "^3.10.1",
+    "picocolors": "^1.1.1"
+  },
   "bin": {
     "bds-utils": "./dist/main.js"
   },
-  "scripts": {
-    "start": "node dist/main.js -c ../../test",
-    "build": "bun build src/main.ts --outdir dist --target node --format esm",
-    "compile:dev": "bun build src/main.ts --compile --target=bun-windows-x64 --outfile build/bds-utils",
-    "compile:release": "bun build src/main.ts --minify --sourcemap --compile --target=bun-windows-x64 --outfile build/bds-utils",
-    "typecheck": "tsc --noEmit",
-    "dev": "bun src/main.ts -c ../../test --debug",
-    "prepublishOnly": "bun run typecheck && bun run build"
+  "description": "Utility CLI tool for Bedrock Dedicated Server",
+  "engines": {
+    "node": ">=20.0.0"
   },
   "keywords": [
     "minecraft",
@@ -22,22 +32,17 @@
     "bds"
   ],
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/tutinoko2048/bds-utils.git",
-    "directory": "packages/cli"
+  "patchedDependencies": {
+    "inquirer-sortable-checkbox@1.0.1": "patches/inquirer-sortable-checkbox@1.0.1.patch"
   },
-  "engines": {
-    "node": ">=20.0.0"
+  "scripts": {
+    "start": "node dist/main.js -c ../../test",
+    "build": "bun build src/main.ts --outdir dist --target node --format esm --external=jsonc-parser",
+    "compile:dev": "bun build src/main.ts --sourcemap --compile --outfile build/bds-utils",
+    "compile:prod": "bun build src/main.ts --minify --compile --outfile build/bds-utils",
+    "typecheck": "tsc --noEmit",
+    "dev": "bun src/main.ts -c ../../test --debug",
+    "prepublishOnly": "bun run typecheck && bun run build"
   },
-  "dependencies": {
-    "@bds-utils/updater-core": "workspace:*",
-    "@inquirer/prompts": "^7.8.3",
-    "@serenityjs/binarystream": "^3.0.10",
-    "@serenityjs/nbt": "^0.8.10",
-    "commander": "^14.0.0",
-    "jsonc-parser": "^3.3.1",
-    "jszip": "^3.10.1",
-    "picocolors": "^1.1.1"
-  }
+  "type": "module"
 }

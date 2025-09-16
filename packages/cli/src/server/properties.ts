@@ -11,9 +11,9 @@ export class ServerProperties {
   ) {
     const data = fs.readFileSync(this.filePath, 'utf-8');
     this.properties = this.parseProperties(data);
-    console.log(
-      pc.dim(`[ServerProperties] Server properties loaded from: ${formatPath(serverPath, this.filePath)}`)
-    );
+    // console.log(
+    //   pc.dim(`[ServerProperties] Server properties loaded from: ${formatPath(serverPath, this.filePath)}`)
+    // );
   }
 
   getValue<T extends string | number | boolean>(key: string): T | undefined {

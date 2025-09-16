@@ -2,30 +2,35 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as jsonc from 'jsonc-parser';
 import JSZip from 'jszip';
-import { Manifest, Uuid, Version } from './types';
+import { AddonLocation, AddonType, Manifest, PackData, Uuid, Version } from './types';
 import { ManifestNotFoundError } from './errors';
 import { normalizeVersion } from '../../util';
 
 export class Addon {
   constructor(
     public readonly addonPath: string,
-    public readonly type: 'resource' | 'behavior',
+    public readonly location: AddonLocation,
+    public readonly type: AddonType,
     private readonly manifest: Manifest,
   ) {}
 
-  getName(): string {
+  get name(): string {
     return this.manifest.header.name;
   }
 
-  getVersion(): string {
+  get normalizedVersion(): string {
     return normalizeVersion(this.manifest.header.version);
   }
 
-  getUuid(): Uuid {
+  get version(): Version {
+    return this.manifest.header.version;
+  }
+
+  get uuid(): Uuid {
     return this.manifest.header.uuid;
   }
 
-  hasScript(): boolean {
+  get hasScript(): boolean {
     return this.manifest.modules.some(module => module.type === 'script');
   }
 
@@ -52,18 +57,18 @@ export class Addon {
     return jsonc.parse(content);
   }
 
-  equals(uuid: Uuid, version: Version) {
+  equals(packData: PackData): boolean {
     return (
-      uuid === this.getUuid() &&
-      normalizeVersion(version) === this.getVersion()
+      packData.pack_id === this.uuid &&
+      normalizeVersion(packData.version) === this.normalizedVersion
     );
   }
 
   toJSON() {
     return {
-      name: this.getName(),
-      version: this.getVersion(),
-      uuid: this.getUuid(),
+      name: this.name,
+      version: this.version,
+      uuid: this.uuid,
       path: this.addonPath,
     }
   }

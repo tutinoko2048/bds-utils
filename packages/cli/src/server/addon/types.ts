@@ -36,9 +36,11 @@ export interface Manifest {
   }[];
 }
 
-export interface PackStack {
+export interface PackData {
   pack_id: Uuid;
   version: Version;
 }
 
 export type AddonType = 'behavior' | 'resource';
+
+export type AddonLocation = 'development' | 'world';

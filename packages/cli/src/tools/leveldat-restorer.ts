@@ -1,15 +1,15 @@
 import * as path from 'node:path';
 import * as pc from 'picocolors';
-import { BedrockServer } from '../server';
-import { selectWorld } from '../prompts';
 import { confirm } from '@inquirer/prompts';
+import { BedrockServer } from '../server';
+import { selectWorldPrompt } from '../prompts';
 
 export async function levelDatRestorer(cwd: string): Promise<void> {
-  console.log(pc.bold(pc.green('🛠️  Level.dat Restorer')));
+  console.log(pc.bold(pc.blue('🔄  Level.dat Restorer')));
 
   const server = new BedrockServer(cwd);
 
-  const world = await selectWorld(server);
+  const world = await selectWorldPrompt(server);
 
   const res = await confirm({
     message: `Are you sure to restore level.dat in world: ${pc.yellow(world.displayName)} ${pc.reset(`(${path.relative(cwd, world.worldPath)})`)} ?`,

@@ -15,6 +15,8 @@ const options: CommandOptions = {
   debug
 };
 
+console.log(pc.bold(pc.whiteBright(`bds-utils v${packageJson.version}\n`)));
+
 // console.debug(options);
 try {
   await selectTool();
@@ -36,27 +38,27 @@ async function selectTool(): Promise<void> {
     message: 'Select a tool to use:',
     choices: [
       {
-        name: 'Server Updater',
-        description: 'Change/update the version of Bedrock Server',
+        name: '🚀  Server Updater',
+        description: 'Update or switch the version of Bedrock Server',
         value: serverUpdater
       },
       {
-        name: 'Addon Manager',
+        name: '📦  Addon Manager',
         description: 'Manage addons for Bedrock Server',
         value: addonManager
       },
       {
-        name: 'Experimental Settings Editor',
+        name: '🧪  Experimental Settings Editor',
         description: 'Edit experimental settings for world',
         value: experimentEditor,
       },
       {
-        name: 'Level.dat Restorer',
+        name: '🔄  Level.dat Restorer',
         description: 'Restore the level.dat file from level.dat_old',
         value: levelDatRestorer,
       },
       {
-        name: `${pc.red('✘')} Exit`,
+        name: '❌  Exit',
         description: 'Exit this program',
         value: () => process.exit()
       }

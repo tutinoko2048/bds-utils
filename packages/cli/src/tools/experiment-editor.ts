@@ -1,8 +1,9 @@
 import { ByteTag, CompoundTag, TagType } from '@serenityjs/nbt';
 import { checkbox } from '@inquirer/prompts';
+import figures from '@inquirer/figures';
 import * as pc from 'picocolors';
 import { BedrockServer } from '../server';
-import { selectWorld } from '../prompts';
+import { selectWorldPrompt } from '../prompts';
 
 const ignoredExperimentsKey = new Set([
   'experiments_ever_used',
@@ -29,11 +30,11 @@ const experimentList: ExperimentEntry[] = [
 ];
 
 export async function experimentEditor(cwd: string): Promise<void> {
-  console.log(pc.bold(pc.green('🛠️  Experimental Settings Editor')));
+  console.log(pc.bold(pc.green('🧪  Experimental Settings Editor')));
 
   const server = new BedrockServer(cwd);
 
-  const world = await selectWorld(server);
+  const world = await selectWorldPrompt(server);
 
   const root = world.levelDat.getRootTag();
   const experimentsTag = root.get<CompoundTag>('experiments');
@@ -71,8 +72,8 @@ export async function experimentEditor(cwd: string): Promise<void> {
     theme: {
       helpMode: 'always',
       icon: {
-        checked: pc.green(' ✓ '),
-        unchecked: pc.red(' ✗ '),
+        checked: ` ${(pc.green(figures.tick))} `,
+        unchecked: ` ${(pc.red(figures.cross))} `,
       }
     },
     loop: false,

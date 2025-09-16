@@ -1,0 +1,68 @@
+diff --git a/dist/cjs/index.js b/dist/cjs/index.js
+index cfa18f155ae868ffe19b38ba680b49170c71f276..afa2c773261af85da80da1e773cbc23eaae4b6ff 100644
+--- a/dist/cjs/index.js
++++ b/dist/cjs/index.js
+@@ -158,8 +158,8 @@ exports.default = (0, core_1.createPrompt)((config, done) => {
+                 `${theme.style.key('space')} to select`,
+                 `${theme.style.key('a')} to toggle all`,
+                 `${theme.style.key('i')} to invert selection`,
+-                `${theme.style.key('ctrl+up')} to move item up`,
+-                `${theme.style.key('ctrl+down')} to move item down`,
++                `${theme.style.key('shift+up')} to move item up`,
++                `${theme.style.key('shift+down')} to move item down`,
+                 `and ${theme.style.key('enter')} to proceed`,
+             ];
+             helpTipTop = ` (Press ${keys.join(', ')})`;
+@@ -192,14 +192,14 @@ function check(checked) {
+     };
+ }
+ function isActivatePreviousItemKey(key) {
+-    return (0, core_1.isUpKey)(key) && !key.ctrl;
++    return (0, core_1.isUpKey)(key) && !key.shift;
+ }
+ function isActivateNextItemKey(key) {
+-    return (0, core_1.isDownKey)(key) && !key.ctrl;
++    return (0, core_1.isDownKey)(key) && !key.shift;
+ }
+ function isMoveItemUpKey(key) {
+-    return key.ctrl && (0, core_1.isUpKey)(key);
++    return key.shift && (0, core_1.isUpKey)(key);
+ }
+ function isMoveItemDownKey(key) {
+-    return key.ctrl && (0, core_1.isDownKey)(key);
++    return key.shift && (0, core_1.isDownKey)(key);
+ }
+diff --git a/dist/esm/index.mjs b/dist/esm/index.mjs
+index 471667141ef64803758c54d80dfbb17a6e83bb9a..29ed1f71db6eb9d0235a9029f0231040d18fd083 100644
+--- a/dist/esm/index.mjs
++++ b/dist/esm/index.mjs
+@@ -144,8 +144,8 @@ export default createPrompt((config, done) => {
+                 `${theme.style.key('space')} to select`,
+                 `${theme.style.key('a')} to toggle all`,
+                 `${theme.style.key('i')} to invert selection`,
+-                `${theme.style.key('ctrl+up')} to move item up`,
+-                `${theme.style.key('ctrl+down')} to move item down`,
++                `${theme.style.key('shift+up')} to move item up`,
++                `${theme.style.key('shift+down')} to move item down`,
+                 `and ${theme.style.key('enter')} to proceed`,
+             ];
+             helpTipTop = ` (Press ${keys.join(', ')})`;
+@@ -178,14 +178,14 @@ function check(checked) {
+     };
+ }
+ function isActivatePreviousItemKey(key) {
+-    return isUpKey(key) && !key.ctrl;
++    return isUpKey(key) && !key.shift;
+ }
+ function isActivateNextItemKey(key) {
+-    return isDownKey(key) && !key.ctrl;
++    return isDownKey(key) && !key.shift;
+ }
+ function isMoveItemUpKey(key) {
+-    return key.ctrl && isUpKey(key);
++    return key.shift && isUpKey(key);
+ }
+ function isMoveItemDownKey(key) {
+-    return key.ctrl && isDownKey(key);
++    return key.shift && isDownKey(key);
+ }
