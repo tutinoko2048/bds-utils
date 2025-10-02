@@ -37,7 +37,7 @@
   },
   "scripts": {
     "start": "node dist/main.js -c ../../test",
-    "build": "bun build src/main.ts --outdir dist --target node --format esm --external=jsonc-parser",
+    "build": "bun build src/main.ts --outdir dist --target node --format esm --packages=external",
     "compile:dev": "bun build src/main.ts --sourcemap --compile --outfile build/bds-utils",
     "compile:prod": "bun build src/main.ts --minify --compile --outfile build/bds-utils",
     "typecheck": "tsc --noEmit",
