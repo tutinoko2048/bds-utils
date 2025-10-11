@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - 'bds-updater@*'
+      - 'updater@*'
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  create_release:
+  release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -29,7 +29,12 @@ jobs:
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
-      
+
+      - name: Update npm
+        run: |
+          npm install -g npm@latest
+          npm --version
+
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -41,61 +46,44 @@ jobs:
       - name: Read package version
         id: version
         run: |
-          # タグからバージョンを抽出 (bds-updater@1.2.3 -> 1.2.3)
+          # タグからバージョンを抽出 (updater@1.2.3 -> 1.2.3)
           if [ -n "${{ github.ref_name }}" ]; then
             tag_version="${{ github.ref_name }}"
-            current_version="${tag_version#bds-updater@}"
+            current_version="${tag_version#updater@}"
           else
             # 手動実行の場合はpackage.jsonから取得
             current_version=$(node -p -e "require('./packages/updater-core/package.json').version")
           fi
           echo "version=$current_version" >> $GITHUB_OUTPUT
 
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: bds-updater@${{ steps.version.outputs.version }}
-          release_name: BDS Updater v${{ steps.version.outputs.version }}
-          draft: false
-          prerelease: false
+      - name: Publish updater-core
+        run: |
+          cd packages/updater-core
+          bun publish --provenance --access public
+
+      - name: Publish updater-cli
+        run: |
+          cd packages/updater-cli
+          bun publish --provenance --access public
 
       - name: Build updater for Windows
         run: |
           cd packages/updater-executable
-          npm run build:windows
+          bun run build:windows
           chmod 644 build/bds-updater-windows.exe
-      
+
       - name: Build updater for Linux
         run: |
           cd packages/updater-executable
-          npm run build:linux
+          bun run build:linux
           chmod 644 build/bds-updater-linux
 
-      - name: Upload updater for Windows
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/updater-executable/build/bds-updater-windows.exe
-          asset_name: bds-updater-windows.exe
-          asset_content_type: application/octet-stream
-
-      - name: Upload updater for Linux
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/updater-executable/build/bds-updater-linux
-          asset_name: bds-updater-linux
-          asset_content_type: application/octet-stream
-
-      - name: Publish bds-updater to NPM
+      - name: Create Release
         run: |
-          cd packages/updater-cli
-          bun run sync-version
-          npm publish --provenance --access public
+          gh release create ${{ github.ref_name }} \
+            --title "bds-updater v${{ steps.version.outputs.version }}" \
+            --generate-notes \
+            packages/updater-executable/build/bds-updater-linux \
+            packages/updater-executable/build/bds-updater-windows.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

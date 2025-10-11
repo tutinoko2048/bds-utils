@@ -2,8 +2,10 @@
   "name": "@bds-utils/updater-executable",
   "private": true,
   "scripts": {
-    "build:windows": "bun build src/main.ts --compile --target=bun-windows-x64 --outfile build/bds-updater-windows --minify",
-    "build:linux": "bun build src/main.ts --compile --target=bun-linux-x64 --outfile build/bds-updater-linux --minify"
+    "compile:dev": "bun build src/main.ts --sourcemap --compile --outfile build/bds-updater",
+    "compile:prod": "bun build src/main.ts --minify --compile",
+    "compile:windows": "bun run compile:prod --target=bun-windows-x64 --outfile build/bds-updater-windows",
+    "compile:linux": "bun run compile:prod --target=bun-linux-x64 --outfile build/bds-updater-linux"
   },
   "dependencies": {
     "@bds-utils/updater-core": "workspace:*",

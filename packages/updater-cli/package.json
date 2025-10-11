@@ -1,15 +1,15 @@
 {
   "name": "bds-updater",
+  "version": "0.0.0",
   "description": "Bedrock Dedicated Server updater CLI tool",
   "type": "module",
   "bin": {
     "bds-updater": "./dist/main.js"
   },
   "scripts": {
-    "build": "bun build src/main.ts --outdir dist --target node --format esm",
+    "build": "bun run scripts/build.ts",
     "typecheck": "tsc --noEmit",
     "dev": "bun src/main.ts -c ../../test",
-    "sync-version": "bun scripts/sync-version.ts",
     "prepublishOnly": "bun run typecheck && bun run build"
   },
   "keywords": [
@@ -25,7 +25,7 @@
     "url": "https://github.com/tutinoko2048/bds-utils.git",
     "directory": "packages/updater-cli"
   },
-  "devDependencies": {
+  "dependencies": {
     "@bds-utils/updater-core": "workspace:*"
   },
   "engines": {
