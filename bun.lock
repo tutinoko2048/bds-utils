@@ -17,7 +17,6 @@
         "bds-utils": "./dist/main.js",
       },
       "dependencies": {
-        "@bds-utils/updater-core": "workspace:*",
         "@inquirer/figures": "^1.0.13",
         "@inquirer/prompts": "^7.8.3",
         "@serenityjs/binarystream": "^3.0.10",
@@ -27,6 +26,9 @@
         "jsonc-parser": "^3.3.1",
         "jszip": "^3.10.1",
         "picocolors": "^1.1.1",
+      },
+      "devDependencies": {
+        "@bds-utils/updater-core": "workspace:*",
       },
     },
     "packages/launcher": {
@@ -39,10 +41,11 @@
     },
     "packages/updater-cli": {
       "name": "bds-updater",
+      "version": "0.0.0",
       "bin": {
         "bds-updater": "./dist/main.js",
       },
-      "devDependencies": {
+      "dependencies": {
         "@bds-utils/updater-core": "workspace:*",
       },
     },
@@ -54,7 +57,6 @@
         "cli-progress": "^3.12.0",
         "commander": "^14.0.0",
         "compare-versions": "^6.1.0",
-        "dayjs": "^1.11.11",
         "fs-extra": "^11.3.0",
         "jsonc": "^2.0.0",
         "ora": "^8.2.0",
