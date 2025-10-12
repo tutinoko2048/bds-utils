@@ -3,6 +3,7 @@
   "compilerOptions": {
     "target": "es2023",
     "module": "nodenext",
+    "lib": ["ES2023"],
     "resolveJsonModule": true,
   }
 }

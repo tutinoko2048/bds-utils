@@ -3,7 +3,6 @@
   "version": "1.0.8",
   "main": "src/main.ts",
   "scripts": {
-    "test": "bun run src/main.ts --cwd ../../test",
     "build": "bun build src/main.ts --format esm --target node --outdir dist --packages external",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "bun run typecheck && bun run build"
@@ -21,9 +20,9 @@
   },
   "devDependencies": {
     "@types/cli-progress": "^3.11.6",
+    "@types/fs-extra": "^11.0.4",
     "@types/progress": "^2.0.7",
-    "@types/unzip-stream": "^0.3.4",
-    "@types/fs-extra": "^11.0.4"
+    "@types/unzip-stream": "^0.3.4"
   },
   "license": "MIT",
   "repository": {

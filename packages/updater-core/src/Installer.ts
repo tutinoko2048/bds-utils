@@ -1,16 +1,19 @@
-import * as path from 'path';
-import { pipeline } from 'stream/promises';
-import { Transform } from 'stream';
+import * as path from 'node:path';
+import { Readable, Transform, Writable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import * as fs from 'node:fs/promises';
+import { createWriteStream } from 'node:fs';
+import { pathExists } from 'fs-extra';
 import * as unzip from 'unzip-stream';
-import * as fs from 'fs/promises';
 import * as pc from 'picocolors';
+
 import type { CacheManager } from './CacheManager';
 import { permissionsJsonMerger, serverPropertiesMerger, type MergeInfo } from './Merge';
 import type { VersionInfo } from './types';
 import { safeCopy } from './utils/fsExtra';
-import { createDownloadProgress } from './progress';
+import { ProgressBar } from './progress';
 import { FileProgressTracker } from './file-progress';
-import { pathExists } from 'fs-extra';
+
 
 const KEEP_ITEMS: [string, MergeInfo][] = [
   ['allowlist.json', {}],
@@ -41,7 +44,6 @@ export class Installer {
     }
 
     console.log();
-    
     console.log(pc.cyan('🔄 Updating server files...'));
     await installer.updateFiles();
     console.log(pc.green('✅ All files updated'));
@@ -50,10 +52,11 @@ export class Installer {
       const bedrockServer = path.join(cacheManager.serverFolder, 'bedrock_server');
       const currentMode = (await fs.stat(bedrockServer)).mode;
       await fs.chmod(bedrockServer, currentMode | fs.constants.S_IXUSR);
-      console.log(pc.blue('🔧 Added execute permission to bedrock_server'));
+      console.log(pc.blue('\n🔧 Added execute permission to bedrock_server'));
     }
     
     // Clear cache after successful installation
+    console.log(pc.dim('\n🧹 Cleaning up cache...'));
     cacheManager.clearCache();
   }
 
@@ -68,26 +71,48 @@ export class Installer {
     if (!res.ok) {
       throw new Error(`Failed to fetch bedrock server: ${res.status} ${res.statusText}\n${url}`);
     }
-  
+
     const totalBytes = Number(res.headers.get('content-length'));
-    const progressBar = createDownloadProgress(totalBytes);
+    const progressBar = new ProgressBar('📥 Downloading server', totalBytes);
     
     let downloadedBytes = 0;
     const progressStream = new Transform({
-      transform(chunk, _encoding, callback) {
+      transform(chunk, _, cb) {
         downloadedBytes += chunk.length;
         progressBar.update(downloadedBytes);
-        callback(null, chunk);
+        cb(null, chunk);
+      },
+    });
+
+    const writeStream = new Writable({
+      objectMode: true,
+      write: (entry: unzip.Entry, _, cb) => {
+        const processEntry = async () => {
+          const filePath = path.join(this.newServerFolder, entry.path);
+
+          if (entry.type === 'Directory') {
+            await fs.mkdir(filePath, { recursive: true });
+            entry.autodrain();
+            return;
+          }
+
+          await fs.mkdir(path.dirname(filePath), { recursive: true });
+
+          await pipeline(entry, createWriteStream(filePath));
+        }
+
+        processEntry().then(() => cb()).catch(cb);
       }
     });
 
     try {
-      const unzipStream = unzip.Extract({ path: this.newServerFolder });
       await pipeline(
-        res.body!,
+        Readable.fromWeb(res.body),
         progressStream,
-        unzipStream,
+        unzip.Parse(),
+        writeStream,
       );
+
     } finally {
       progressBar.stop();
     }
