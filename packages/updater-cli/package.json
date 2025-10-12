@@ -9,7 +9,7 @@
   "scripts": {
     "build": "bun run scripts/build.ts",
     "typecheck": "tsc --noEmit",
-    "dev": "bun src/main.ts -c ../../test",
+    "dev": "bun src/main.ts -c ../../test --debug",
     "prepublishOnly": "bun run typecheck && bun run build"
   },
   "keywords": [

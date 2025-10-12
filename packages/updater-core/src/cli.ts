@@ -142,6 +142,7 @@ export async function askVersion(versionEntry: VersionList): Promise<VersionInfo
 const MANUAL = '__manual__';
 
 async function selectVersionWithAutocomplete(versions: string[]): Promise<string> {
+  // Reverse versions to show latest first
   const reversedVersions = versions.toReversed();
   const recentVersions = reversedVersions.slice(0, 8);
 
@@ -171,8 +172,7 @@ async function selectVersionWithAutocomplete(versions: string[]): Promise<string
     source(msg) {
       if (!msg?.trim()) return recentVersions;
 
-      const filtered = reversedVersions.filter((v) => v.toLowerCase().includes(msg.toLowerCase()));
-      return filtered;
+      return reversedVersions.filter((v) => v.toLowerCase().startsWith(msg.toLowerCase()));
     },
     validate(value: string) {
       if (!value.trim()) return 'Please enter a version.';
