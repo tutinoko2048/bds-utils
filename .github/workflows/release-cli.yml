@@ -9,14 +9,14 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
-      id-token: write
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -58,9 +58,13 @@ jobs:
           echo "version=$current_version" >> $GITHUB_OUTPUT
 
       - name: Publish bds-utils
+        # bun publish がOIDC非対応のため、npm publish を使う
+        # prepackだと実行前にpackage.jsonが読み込まれて0.0.0のままになるため、事前に手動でbuildしておく
         run: |
           cd packages/cli
-          bun publish --provenance --access public
+          bun run build
+          bun pm pack
+          npm publish *.tgz --provenance --access public
 
       - name: Build Linux executable
         run: |

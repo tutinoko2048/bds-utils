@@ -10,8 +10,7 @@
     "compile:linux": "bun run compile:prod --target=bun-linux-x64 --outfile build/bds-utils-linux",
     "compile:windows": "bun run compile:prod --target=bun-windows-x64 --outfile build/bds-utils-windows",
     "typecheck": "tsc --noEmit",
-    "dev": "bun src/main.ts -c ../../test --debug",
-    "prepublishOnly": "bun run typecheck && bun run build"
+    "dev": "bun src/main.ts -c ../../test --debug"
   },
   "dependencies": {
     "@inquirer/figures": "^1.0.13",

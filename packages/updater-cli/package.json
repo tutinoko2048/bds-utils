@@ -9,8 +9,7 @@
   "scripts": {
     "build": "bun run scripts/build.ts",
     "typecheck": "tsc --noEmit",
-    "dev": "bun src/main.ts -c ../../test --debug",
-    "prepublishOnly": "bun run typecheck && bun run build"
+    "dev": "bun src/main.ts -c ../../test --debug"
   },
   "keywords": [
     "minecraft",

@@ -23,3 +23,5 @@ await Bun.build({
   format: "esm",
   packages: "external",
 });
+
+console.log("Build completed.");

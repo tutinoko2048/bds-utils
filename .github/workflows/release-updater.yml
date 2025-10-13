@@ -9,14 +9,14 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
-      id-token: write
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -59,12 +59,16 @@ jobs:
       - name: Publish updater-core
         run: |
           cd packages/updater-core
-          bun publish --provenance --access public
+          bun run build
+          bun pm pack
+          npm publish *.tgz --provenance --access public
 
       - name: Publish updater-cli
         run: |
           cd packages/updater-cli
-          bun publish --provenance --access public
+          bun run build
+          bun pm pack
+          npm publish *.tgz --provenance --access public
 
       - name: Build updater for Windows
         run: |
