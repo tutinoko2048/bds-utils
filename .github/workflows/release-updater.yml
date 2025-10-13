@@ -70,13 +70,11 @@ jobs:
         run: |
           cd packages/updater-executable
           bun run build:windows
-          chmod 644 build/bds-updater-windows.exe
 
       - name: Build updater for Linux
         run: |
           cd packages/updater-executable
           bun run build:linux
-          chmod 644 build/bds-updater-linux
 
       - name: Create Release
         run: |
