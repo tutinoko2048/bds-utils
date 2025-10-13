@@ -73,12 +73,12 @@ jobs:
       - name: Build updater for Windows
         run: |
           cd packages/updater-executable
-          bun run build:windows
+          bun run compile:windows
 
       - name: Build updater for Linux
         run: |
           cd packages/updater-executable
-          bun run build:linux
+          bun run compile:linux
 
       - name: Create Release
         run: |
