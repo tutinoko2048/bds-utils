@@ -2,8 +2,9 @@
   "include": ["src"],
   "compilerOptions": {
     "target": "es2023",
-    "module": "nodenext",
+    "module": "es2022",
     "lib": ["ES2023"],
     "resolveJsonModule": true,
+    "moduleResolution": "bundler"
   }
 }

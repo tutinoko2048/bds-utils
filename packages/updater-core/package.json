@@ -1,18 +1,20 @@
 {
   "name": "@bds-utils/updater-core",
   "version": "1.1.0",
-  "main": "src/main.ts",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "bun build src/main.ts --format esm --target node --outdir dist --packages external",
+    "build": "tsdown",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "bun run typecheck && bun run build"
+    "prepublishOnly": "bun run build"
   },
   "dependencies": {
-    "@inquirer/prompts": "^7.6.0",
+    "@inquirer/prompts": "^7.8.6",
     "cli-progress": "^3.12.0",
-    "commander": "^14.0.0",
+    "commander": "^14.0.1",
     "compare-versions": "^6.1.0",
-    "fs-extra": "^11.3.0",
+    "fs-extra": "^11.3.2",
     "jsonc": "^2.0.0",
     "ora": "^8.2.0",
     "picocolors": "^1.1.1",

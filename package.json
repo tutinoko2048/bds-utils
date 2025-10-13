@@ -5,9 +5,10 @@
   "type": "module",
   "workspaces": ["packages/*"],
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "tsdown": "^0.15.6"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.8.3"
   }
 }
