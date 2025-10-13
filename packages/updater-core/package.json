@@ -1,6 +1,6 @@
 {
   "name": "@bds-utils/updater-core",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "main": "src/main.ts",
   "scripts": {
     "build": "bun build src/main.ts --format esm --target node --outdir dist --packages external",
