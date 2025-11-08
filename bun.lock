@@ -5,7 +5,7 @@
       "name": "bds-utils",
       "devDependencies": {
         "@types/bun": "latest",
-        "tsdown": "^0.15.6",
+        "tsdown": "^0.15.12",
       },
       "peerDependencies": {
         "typescript": "^5.8.3",
@@ -52,7 +52,7 @@
     },
     "packages/updater-core": {
       "name": "@bds-utils/updater-core",
-      "version": "1.1.3",
+      "version": "1.1.4",
       "dependencies": {
         "@inquirer/prompts": "^7.8.6",
         "cli-progress": "^3.12.0",
