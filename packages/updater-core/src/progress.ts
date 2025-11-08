@@ -1,5 +1,5 @@
 import * as cliProgress from 'cli-progress';
-import * as pc from 'picocolors';
+import pc from 'picocolors';
 
 export class ProgressBar {
   private progressBar: cliProgress.SingleBar;

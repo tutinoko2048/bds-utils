@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { compare } from 'compare-versions';
-import * as pc from 'picocolors';
+import pc from 'picocolors';
 
 export class CacheManager {
   public cache!: LauncherCache;

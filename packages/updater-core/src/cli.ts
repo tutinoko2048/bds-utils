@@ -1,7 +1,7 @@
 import { select, confirm, search } from '@inquirer/prompts';
 import { Command } from 'commander';
 import ora from 'ora';
-import * as pc from 'picocolors';
+import pc from 'picocolors';
 import type { VersionInfo, VersionList } from './types';
 import packageJson from '../package.json';
 

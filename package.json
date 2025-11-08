@@ -6,7 +6,7 @@
   "workspaces": ["packages/*"],
   "devDependencies": {
     "@types/bun": "latest",
-    "tsdown": "^0.15.6"
+    "tsdown": "^0.15.12"
   },
   "peerDependencies": {
     "typescript": "^5.8.3"

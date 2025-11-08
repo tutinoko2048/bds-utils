@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as pc from 'picocolors';
+import pc from 'picocolors';
 import { CacheManager } from './CacheManager';
 import { Installer } from './Installer';
 import type { VersionList, ServerBuildInfo, VersionInfo } from './types';

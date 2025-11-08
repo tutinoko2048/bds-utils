@@ -5,7 +5,7 @@ import * as fs from 'node:fs/promises';
 import { createWriteStream } from 'node:fs';
 import { pathExists } from 'fs-extra';
 import * as unzip from 'unzip-stream';
-import * as pc from 'picocolors';
+import pc from 'picocolors';
 
 import type { CacheManager } from './CacheManager';
 import { permissionsJsonMerger, serverPropertiesMerger, type MergeInfo } from './Merge';
