@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "bds-utils",
@@ -13,11 +14,12 @@
     },
     "packages/cli": {
       "name": "@bds-utils/cli",
-      "version": "0.1.0-beta",
+      "version": "0.1.0-beta.2",
       "bin": {
         "bds-utils": "./dist/main.js",
       },
       "dependencies": {
+        "@bds-utils/updater-core": "workspace:*",
         "@inquirer/figures": "^1.0.13",
         "@inquirer/prompts": "^7.8.6",
         "@serenityjs/binarystream": "^3.0.10",
@@ -27,9 +29,6 @@
         "jsonc-parser": "^3.3.1",
         "jszip": "^3.10.1",
         "picocolors": "^1.1.1",
-      },
-      "devDependencies": {
-        "@bds-utils/updater-core": "workspace:*",
       },
     },
     "packages/launcher": {

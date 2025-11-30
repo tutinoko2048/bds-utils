@@ -11,6 +11,7 @@
 ### bds-utils
 - cliのpackage.jsonのversionを更新 (推奨: `bun pm version`)
 - bun iを実行してロックファイルも更新
+- commitしてpush
 - タグ `utils@{version}` を作成
   - `git tag utils@{version}`
   - `git push --tags`

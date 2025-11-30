@@ -1,6 +1,6 @@
 {
   "name": "@bds-utils/cli",
-  "version": "0.1.0-beta",
+  "version": "0.1.0-beta.2",
   "type": "module",
   "scripts": {
     "start": "node dist/main.js -c ../../test",
@@ -21,9 +21,7 @@
     "inquirer-sortable-checkbox": "^1.0.1",
     "jsonc-parser": "^3.3.1",
     "jszip": "^3.10.1",
-    "picocolors": "^1.1.1"
-  },
-  "devDependencies": {
+    "picocolors": "^1.1.1",
     "@bds-utils/updater-core": "workspace:*"
   },
   "patchedDependencies": {
