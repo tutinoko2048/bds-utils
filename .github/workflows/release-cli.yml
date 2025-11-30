@@ -56,6 +56,16 @@ jobs:
             current_version=$(node -p -e "require('./packages/cli/package.json').version")
           fi
           echo "version=$current_version" >> $GITHUB_OUTPUT
+          
+          # プレリリース版判定
+          if [[ $current_version =~ ^[0-9]+\.[0-9]+\.[0-9]+- ]]; then
+            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+            # プレリリース識別子を抽出 (1.2.3-beta.2 -> beta)
+            prerelease_tag=$(echo $current_version | sed 's/^[0-9]\+\.[0-9]\+\.[0-9]\+-\([a-z]\+\).*/\1/')
+            echo "prerelease_tag=$prerelease_tag" >> $GITHUB_OUTPUT
+          else
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Publish bds-utils
         # bun publish がOIDC非対応のため、npm publish を使う
@@ -64,7 +74,11 @@ jobs:
           cd packages/cli
           bun run build
           bun pm pack
-          npm publish *.tgz --provenance --access public
+          if [ "${{ steps.version.outputs.is_prerelease }}" = "true" ]; then
+            npm publish *.tgz --provenance --access public --tag ${{ steps.version.outputs.prerelease_tag }}
+          else
+            npm publish *.tgz --provenance --access public
+          fi
 
       - name: Build Linux executable
         run: |
