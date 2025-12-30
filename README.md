@@ -4,7 +4,7 @@ A collection of CLI tools for managing Bedrock Dedicated Server (BDS).
 
 ## 🛠️ Tools
 
-<!-- ### bds-utils
+### bds-utils
 
 A utility management tool for Bedrock Dedicated Server.
 
@@ -22,15 +22,19 @@ npm install -g @bds-utils/cli
 ```
 
 Or download the executable directly:
-- [Windows](https://github.com/tutinoko2048/bds-utils/releases/latest)
-- [Linux](https://github.com/tutinoko2048/bds-utils/releases/latest)
+https://github.com/tutinoko2048/bds-utils/releases
 
 **Usage:**
+```bash
+bds-utils
+```
+
+With specifying the server path:
 ```bash
 bds-utils -c <path-to-server>
 ```
 
---- -->
+---
 
 ### bds-updater
 
@@ -48,8 +52,12 @@ Via npm:
 npm install -g bds-updater
 ```
 
-Or download the executable directly:
-https://github.com/tutinoko2048/bds-utils/releases/latest
+Or download the executable directly: https://github.com/tutinoko2048/bds-utils/releases/latest
+
+Or using bun:
+```bash
+bunx bds-updater
+```
 
 **Usage:**
 
@@ -58,10 +66,7 @@ Via installed package:
 bds-updater
 ```
 
-Or run directly with using bun:
-```bash
-bunx bds-updater
-```
+Or you can run directly with using bunx as shown above.
 
 ---
 
