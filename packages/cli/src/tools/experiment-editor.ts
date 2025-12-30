@@ -1,7 +1,7 @@
 import { ByteTag, CompoundTag, TagType } from '@serenityjs/nbt';
 import { checkbox } from '@inquirer/prompts';
 import figures from '@inquirer/figures';
-import * as pc from 'picocolors';
+import pc from 'picocolors';
 import { BedrockServer } from '../server';
 import { selectWorldPrompt } from '../prompts';
 

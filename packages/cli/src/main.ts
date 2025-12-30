@@ -3,7 +3,7 @@
 import * as path from 'node:path';
 import { Command } from 'commander';
 import { select } from '@inquirer/prompts';
-import * as pc from 'picocolors';
+import pc from 'picocolors';
 import { experimentEditor, serverUpdater, levelDatRestorer, addonManager } from './tools';
 
 import packageJson from '../package.json' with { type: "json" };

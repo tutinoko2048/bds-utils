@@ -1,5 +1,5 @@
 import * as path from 'node:path';
-import * as pc from 'picocolors';
+import pc from 'picocolors';
 import { select } from '@inquirer/prompts';
 import figures from '@inquirer/figures';
 import sortableCheckbox from 'inquirer-sortable-checkbox';

@@ -1,5 +1,5 @@
 import * as path from 'node:path';
-import * as pc from 'picocolors';
+import pc from 'picocolors';
 import { confirm } from '@inquirer/prompts';
 import { BedrockServer } from '../server';
 import { selectWorldPrompt } from '../prompts';

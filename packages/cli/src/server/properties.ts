@@ -1,5 +1,5 @@
 import * as fs from 'node:fs';
-import * as pc from 'picocolors';
+import pc from 'picocolors';
 import { formatPath } from '../util';
 
 export class ServerProperties {

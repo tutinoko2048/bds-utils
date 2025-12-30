@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import * as pc from 'picocolors';
+import pc from 'picocolors';
 import { formatPath, tryReadFileSync } from '../util';
 import { LevelDat } from './level-dat';
 import { AddonManager } from './addon';

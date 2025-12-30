@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import path from 'node:path';
 import { BinaryStream, Endianness } from '@serenityjs/binarystream';
 import { CompoundTag } from '@serenityjs/nbt';
-import * as pc from 'picocolors';
+import pc from 'picocolors';
 
 export interface LevelDatHeader {
   version: number;
