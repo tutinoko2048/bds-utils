@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import * as path from 'node:path';
 import { Command } from 'commander';
 import { select } from '@inquirer/prompts';

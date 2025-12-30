@@ -72,6 +72,7 @@ jobs:
         # prepackだと実行前にpackage.jsonが読み込まれて0.0.0のままになるため、事前に手動でbuildしておく
         run: |
           cd packages/cli
+          bun run typecheck
           bun run build
           bun pm pack
           if [ "${{ steps.version.outputs.is_prerelease }}" = "true" ]; then
