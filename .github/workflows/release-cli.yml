@@ -80,6 +80,11 @@ jobs:
             npm publish *.tgz --provenance --access public
           fi
 
+      - name: Build updater-core
+        run: |
+          cd packages/updater-core
+          bun run build
+
       - name: Build Linux executable
         run: |
           cd packages/cli
