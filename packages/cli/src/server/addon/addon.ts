@@ -36,20 +36,19 @@ export class Addon {
 
   static async readManifest(dirent: fs.Dirent): Promise<Manifest> {
     const addonPath = path.join(dirent.parentPath, dirent.name);
-    
-    let content: string;
-    if (dirent.isDirectory()) {
-      content = fs.readFileSync(path.join(addonPath, 'manifest.json'), 'utf-8');
+    const stat = fs.statSync(addonPath);
 
-    } else if (dirent.isFile() && ['.zip', '.mcpack'].includes(path.extname(addonPath))) {
+    let content: string;
+    if (stat.isDirectory()) {
+      content = fs.readFileSync(path.join(addonPath, 'manifest.json'), 'utf-8');
+    } else if (stat.isFile() && ['.zip', '.mcpack'].includes(path.extname(addonPath))) {
       const buffer = fs.readFileSync(addonPath);
       const zip = await JSZip.loadAsync(buffer);
-      
+
       const manifestFile = zip.file('manifest.json');
       if (!manifestFile) throw new ManifestNotFoundError();
-      
-      content = await manifestFile.async('string');
 
+      content = await manifestFile.async('string');
     } else {
       throw new ManifestNotFoundError();
     }
