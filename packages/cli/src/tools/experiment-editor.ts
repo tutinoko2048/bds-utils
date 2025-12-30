@@ -15,18 +15,18 @@ interface ExperimentEntry {
   key: string;
 }
 
-// Last updated: 2025/08/20 - v1.21.101
+// Last updated: 2025/12/30 - v1.21.131
 const experimentList: ExperimentEntry[] = [
   // gameplay
   { name: 'Villager Trade Rebalancing', key: 'villager_trades_rebalance' },
-  { name: 'Drop 3 2025', key: 'y_2025_drop_3' },
+  // { name: 'Drop 3 2025', key: 'y_2025_drop_3' }, // removed in 1.21.131
 
   // add-on creators
-  { name: 'Custom biomes', key: 'data_driven_biomes' },
+  // { name: 'Custom biomes', key: 'data_driven_biomes' }, // removed in 1.21.131
   { name: 'Upcoming Creator Features', key: 'upcoming_creator_features' },
   { name: 'Beta APIs', key: 'gametest' },
   { name: 'Experimental Creator Camera Features', key: 'experimental_creator_cameras' },
-  { name: 'Data-Driven Jigsaw Structures', key: 'jigsaw_structures' },
+  // { name: 'Data-Driven Jigsaw Structures', key: 'jigsaw_structures' }, // removed in 1.21.131
 ];
 
 export async function experimentEditor(cwd: string): Promise<void> {
