@@ -14,7 +14,7 @@
     },
     "packages/cli": {
       "name": "@bds-utils/cli",
-      "version": "0.1.0-beta.4",
+      "version": "0.1.0-beta.5",
       "bin": {
         "bds-utils": "./dist/main.js",
       },
