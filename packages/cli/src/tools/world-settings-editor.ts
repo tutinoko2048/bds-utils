@@ -101,7 +101,6 @@ export async function worldSettingsEditor(cwd: string): Promise<void> {
       ...experimentChoices
     ],
     theme: {
-      helpMode: 'always',
       icon: {
         checked: ` ${(pc.green(figures.tick))} `,
         unchecked: ` ${(pc.red(figures.cross))} `,
