@@ -3,7 +3,7 @@
 Utility CLI tool for Bedrock Dedicated Server
 
 ## features
-- Experimental Settings Editor
+- World Settings Editor
 - Level.dat Restorer
 - Server Updater
 - Addon Manager

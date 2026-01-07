@@ -11,7 +11,7 @@ A utility management tool for Bedrock Dedicated Server.
 **Features:**
 - 🚀 Server Updater - Update or switch the version of Bedrock Dedicated Server ([details](#bds-updater))
 - 📦 Addon Manager - Enable/disable addons for worlds
-- 🧪 Experimental Settings Editor - Edit experimental setting for world
+- 🌏 World Settings Editor - Edit world settings and experimental features
 - 🔄 Level.dat Restorer - Restore level.dat file from level.dat_old
 
 **Installation:**

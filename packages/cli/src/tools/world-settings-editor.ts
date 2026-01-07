@@ -42,8 +42,8 @@ const experimentList: Record<string, ExperimentEntry> = {
   jigsaw_structures: { name: 'Data-Driven Jigsaw Structures', isRemoved: true }, // removed in 1.21.131
 };
 
-export async function experimentEditor(cwd: string): Promise<void> {
-  console.log(pc.bold(pc.green('🧪  Experimental Settings Editor')));
+export async function worldSettingsEditor(cwd: string): Promise<void> {
+  console.log(pc.bold(pc.green('🌏  World Settings Editor')));
 
   const server = new BedrockServer(cwd);
 
