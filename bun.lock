@@ -51,7 +51,7 @@
     },
     "packages/updater-core": {
       "name": "@bds-utils/updater-core",
-      "version": "1.1.4",
+      "version": "1.2.0",
       "dependencies": {
         "@inquirer/prompts": "^8.1.0",
         "cli-progress": "^3.12.0",
