@@ -14,22 +14,33 @@ const EDUCATION_FEATURE_KEY = 'educationFeaturesEnabled';
 
 interface ExperimentEntry {
   name: string;
-  key: string;
+  isRemoved?: boolean;
 }
 
-// Last updated: 2025/12/30 - v1.21.131
-const experimentList: ExperimentEntry[] = [
+interface Choice<T> {
+  name: string;
+  value: T;
+  checked: boolean;
+  description?: string;
+}
+
+// Last updated: 2025/12/30
+const LAST_UPDATED_VERSION = '1.21.131';
+
+const experimentList: Record<string, ExperimentEntry> = {
   // gameplay
-  { name: 'Villager Trade Rebalancing', key: 'villager_trades_rebalance' },
-  // { name: 'Drop 3 2025', key: 'y_2025_drop_3' }, // removed in 1.21.131
+  villager_trades_rebalance: { name: 'Villager Trade Rebalancing' },
 
   // add-on creators
-  // { name: 'Custom biomes', key: 'data_driven_biomes' }, // removed in 1.21.131
-  { name: 'Upcoming Creator Features', key: 'upcoming_creator_features' },
-  { name: 'Beta APIs', key: 'gametest' },
-  { name: 'Experimental Creator Camera Features', key: 'experimental_creator_cameras' },
-  // { name: 'Data-Driven Jigsaw Structures', key: 'jigsaw_structures' }, // removed in 1.21.131
-];
+  upcoming_creator_features: { name: 'Upcoming Creator Features' },
+  gametest: { name: 'Beta APIs' },
+  experimental_creator_cameras: { name: 'Experimental Creator Camera Features' },
+
+  // removed
+  y_2025_drop_3: { name: 'Drop 3 2025', isRemoved: true }, // removed in 1.21.131
+  data_driven_biomes: { name: 'Custom biomes', isRemoved: true }, // removed in 1.21.131
+  jigsaw_structures: { name: 'Data-Driven Jigsaw Structures', isRemoved: true }, // removed in 1.21.131
+};
 
 export async function experimentEditor(cwd: string): Promise<void> {
   console.log(pc.bold(pc.green('🧪  Experimental Settings Editor')));
@@ -47,38 +58,47 @@ export async function experimentEditor(cwd: string): Promise<void> {
   for (const [key, tag] of experimentsTag.entries()) {
     if (ignoredExperimentsKey.has(key)) continue;
     if (tag.type === TagType.Byte) {
+      const listEntry = experimentList[key];
       experimentStates.set(key, {
-        key: key,
-        name: experimentList.find(exp => exp.key === key)?.name ?? key,
-        defaultValue: tag.valueOf() === 1 // use current value
+        name: listEntry ? listEntry.name : key,
+        defaultValue: tag.valueOf() === 1, // use current value
+        isRemoved: listEntry ? listEntry.isRemoved : true // treat as removed if not in list
       });
     }
   }
   // get defined values
-  for (const exp of experimentList) {
-    if (experimentStates.has(exp.key)) continue;
-    experimentStates.set(exp.key, {
-      key: exp.key,
+  for (const [key, exp] of Object.entries(experimentList)) {
+    if (experimentStates.has(key)) continue;
+    if (exp.isRemoved) continue; // skip removed experiments
+
+    experimentStates.set(key, {
       name: exp.name,
       defaultValue: false // treat as "false" if not exist in tag
     });
   }
 
+  const experimentChoices: Choice<string>[] = [...experimentStates.entries()]
+    .toSorted(([_, x]) => x.isRemoved ? 1 : -1)
+    .map(([key, exp]) => ({
+      name: exp.name + (exp.isRemoved ? pc.dim(' (removed)') : ''),
+      value: key,
+      checked: exp.defaultValue,
+      description: exp.isRemoved
+        ? `${pc.yellow(figures.warning)}  ${pc.dim(pc.italic(`This experiment has been removed in the current version: ${LAST_UPDATED_VERSION}`))}`
+        : undefined
+    }));
+
   const checkedKeys = await checkbox({
     message: 'Check experiments to enable:',
     choices: [
-      new Separator('--- Common ---'),
+      new Separator(pc.whiteBright('--- Common ---')),
       {
         name: 'Minecraft Education Features',
         value: EDUCATION_FEATURE_KEY,
         checked: root.get<ByteTag>(EDUCATION_FEATURE_KEY)?.valueOf() === 1
       },
-      new Separator('--- Experiments ---'),
-      ...[...experimentStates.values()].map(exp => ({
-        name: exp.name,
-        value: exp.key,
-        checked: exp.defaultValue
-      }))
+      new Separator(pc.whiteBright('--- Experiments ---')),
+      ...experimentChoices
     ],
     theme: {
       helpMode: 'always',
