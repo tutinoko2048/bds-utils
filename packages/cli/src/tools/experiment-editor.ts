@@ -1,5 +1,5 @@
 import { ByteTag, CompoundTag, TagType } from '@serenityjs/nbt';
-import { checkbox } from '@inquirer/prompts';
+import { checkbox, Separator } from '@inquirer/prompts';
 import figures from '@inquirer/figures';
 import pc from 'picocolors';
 import { BedrockServer } from '../server';
@@ -9,6 +9,8 @@ const ignoredExperimentsKey = new Set([
   'experiments_ever_used',
   'saved_with_toggled_experiments'
 ]);
+
+const EDUCATION_FEATURE_KEY = 'educationFeaturesEnabled';
 
 interface ExperimentEntry {
   name: string;
@@ -64,11 +66,20 @@ export async function experimentEditor(cwd: string): Promise<void> {
 
   const checkedKeys = await checkbox({
     message: 'Check experiments to enable:',
-    choices: [...experimentStates.values()].map(exp => ({
-      name: exp.name,
-      value: exp.key,
-      checked: exp.defaultValue
-    })),
+    choices: [
+      new Separator('--- Common ---'),
+      {
+        name: 'Minecraft Education Features',
+        value: EDUCATION_FEATURE_KEY,
+        checked: root.get<ByteTag>(EDUCATION_FEATURE_KEY)?.valueOf() === 1
+      },
+      new Separator('--- Experiments ---'),
+      ...[...experimentStates.values()].map(exp => ({
+        name: exp.name,
+        value: exp.key,
+        checked: exp.defaultValue
+      }))
+    ],
     theme: {
       helpMode: 'always',
       icon: {
@@ -77,9 +88,17 @@ export async function experimentEditor(cwd: string): Promise<void> {
       }
     },
     loop: false,
-    pageSize: experimentStates.size
+    pageSize: experimentStates.size + 3
   });
 
+  // common settings
+  if (checkedKeys.includes(EDUCATION_FEATURE_KEY)) {
+    root.set(EDUCATION_FEATURE_KEY, new ByteTag(1));
+  } else {
+    root.set(EDUCATION_FEATURE_KEY, new ByteTag(0));
+  }
+
+  // experiment settings
   for (const key of experimentStates.keys()) {
     if (checkedKeys.includes(key)) {
       experimentsTag.set(key, new ByteTag(1));
