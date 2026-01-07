@@ -52,7 +52,7 @@ class ServerUpdater {
     });
 
     if (updateAvailable) {
-      console.log(formatInfo(`New version available: ${pc.bold(latestVersion)}`));
+      console.log(formatInfo(`New version available: ${pc.bold(latestVersion)} ${pc.dim(`(current: ${this.cacheManager.getVersion()})`)}`));
     } else {
       console.log(
         formatSuccess(`Bedrock server is up to date! ${pc.dim(`(${this.cacheManager.getVersion()})`)}`)
