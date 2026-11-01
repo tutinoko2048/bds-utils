@@ -4,7 +4,7 @@ import * as path from 'node:path';
 import { Command } from 'commander';
 import { select } from '@inquirer/prompts';
 import pc from 'picocolors';
-import { worldSettingsEditor, serverUpdater, levelDatRestorer, addonManager } from './tools';
+import { worldSettingsEditor, serverUpdater, levelDatRestorer, addonManager, scriptPermissionsEditor } from './tools';
 
 import packageJson from '../package.json' with { type: "json" };
 
@@ -53,6 +53,11 @@ async function selectTool(): Promise<void> {
         name: '🌏  World Settings Editor',
         description: 'Edit world settings and experimental features',
         value: worldSettingsEditor,
+      },
+      {
+        name: '📜  Script Permissions Editor',
+        description: 'Edit allowed script modules in config/default/permissions.json',
+        value: scriptPermissionsEditor,
       },
       {
         name: '🔄  Level.dat Restorer',
