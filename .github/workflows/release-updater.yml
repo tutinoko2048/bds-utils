@@ -98,6 +98,12 @@ jobs:
         working-directory: packages/updater-executable
         run: bun run compile:linux
 
+      - name: Zip executables
+        working-directory: packages/updater-executable/build
+        run: |
+          zip -9 bds-updater-linux.zip bds-updater-linux
+          zip -9 bds-updater-windows.zip bds-updater-windows.exe
+
       - name: Create Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -108,4 +114,6 @@ jobs:
             --title "bds-updater v$VERSION" \
             --generate-notes \
             packages/updater-executable/build/bds-updater-linux \
-            packages/updater-executable/build/bds-updater-windows.exe
+            packages/updater-executable/build/bds-updater-windows.exe \
+            packages/updater-executable/build/bds-updater-linux.zip \
+            packages/updater-executable/build/bds-updater-windows.zip

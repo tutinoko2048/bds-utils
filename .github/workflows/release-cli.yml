@@ -91,6 +91,12 @@ jobs:
         working-directory: packages/cli
         run: bun run compile:windows
 
+      - name: Zip executables
+        working-directory: packages/cli/build
+        run: |
+          zip -9 bds-utils-linux.zip bds-utils-linux
+          zip -9 bds-utils-windows.zip bds-utils-windows.exe
+
       - name: Create Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -101,4 +107,6 @@ jobs:
             --title "bds-utils v$VERSION" \
             --generate-notes \
             packages/cli/build/bds-utils-linux \
-            packages/cli/build/bds-utils-windows.exe
+            packages/cli/build/bds-utils-windows.exe \
+            packages/cli/build/bds-utils-linux.zip \
+            packages/cli/build/bds-utils-windows.zip
