@@ -6,6 +6,7 @@
       "name": "bds-utils",
       "devDependencies": {
         "@types/bun": "latest",
+        "@types/node": "^24",
         "tsdown": "^0.23.4",
       },
       "peerDependencies": {
