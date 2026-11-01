@@ -28,6 +28,6 @@
     "@bds-utils/updater-core": "workspace:*"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.12.0"
   }
 }
