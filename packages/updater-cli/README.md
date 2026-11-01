@@ -4,6 +4,8 @@ Bedrock Dedicated Server updater CLI tool.
 
 ## Installation
 
+Requires Node.js 22.12.0 or later.
+
 ```bash
 npm install -g bds-updater
 ```
