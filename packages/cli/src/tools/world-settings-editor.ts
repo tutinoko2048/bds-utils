@@ -1,5 +1,5 @@
 import { ByteTag, CompoundTag, TagType } from '@serenityjs/nbt';
-import { checkbox, Separator } from '@inquirer/prompts';
+import { checkbox, input, Separator } from '@inquirer/prompts';
 import figures from '@inquirer/figures';
 import pc from 'picocolors';
 import { BedrockServer } from '../server';
@@ -11,6 +11,7 @@ const ignoredExperimentsKey = new Set([
 ]);
 
 const EDUCATION_FEATURE_KEY = 'educationFeaturesEnabled';
+const CUSTOM_KEYS_CHOICE = '__custom_keys__';
 
 interface ExperimentEntry {
   name: string;
@@ -24,17 +25,20 @@ interface Choice<T> {
   description?: string;
 }
 
-// Last updated: 2025/12/30
-const LAST_UPDATED_VERSION = '1.21.131';
+// Last updated: 2026/11/01
+const LAST_UPDATED_VERSION = '1.26.60';
 
 const experimentList: Record<string, ExperimentEntry> = {
   // gameplay
   villager_trades_rebalance: { name: 'Villager Trade Rebalancing' },
+  y_2026_drop_4: { name: 'Drop 4 2026' },
 
   // add-on creators
   upcoming_creator_features: { name: 'Upcoming Creator Features' },
   gametest: { name: 'Beta APIs' },
   experimental_creator_cameras: { name: 'Experimental Creator Camera Features' },
+  voxel_shapes: { name: 'Voxel Shapes' },
+  poi: { name: 'Points of Interest' },
 
   // removed
   y_2025_drop_3: { name: 'Drop 3 2025', isRemoved: true }, // removed in 1.21.131
@@ -98,7 +102,13 @@ export async function worldSettingsEditor(cwd: string): Promise<void> {
         checked: root.get<ByteTag>(EDUCATION_FEATURE_KEY)?.valueOf() === 1
       },
       new Separator(pc.whiteBright('--- Experiments ---')),
-      ...experimentChoices
+      ...experimentChoices,
+      new Separator(pc.whiteBright('--- Other ---')),
+      {
+        name: 'Add custom experiment keys...',
+        value: CUSTOM_KEYS_CHOICE,
+        checked: false
+      }
     ],
     theme: {
       icon: {
@@ -107,8 +117,16 @@ export async function worldSettingsEditor(cwd: string): Promise<void> {
       }
     },
     loop: false,
-    pageSize: experimentStates.size + 3
+    pageSize: experimentStates.size + 5
   });
+
+  // custom keys for experiments not in the list yet
+  const customKeys = checkedKeys.includes(CUSTOM_KEYS_CHOICE)
+    ? (await input({ message: 'Experiment keys to enable (comma-separated):' }))
+      .split(',')
+      .map(key => key.trim())
+      .filter(key => key && !ignoredExperimentsKey.has(key))
+    : [];
 
   // common settings
   if (checkedKeys.includes(EDUCATION_FEATURE_KEY)) {
@@ -126,6 +144,9 @@ export async function worldSettingsEditor(cwd: string): Promise<void> {
         experimentsTag.set(key, new ByteTag(0));
       }
     }
+  }
+  for (const key of customKeys) {
+    experimentsTag.set(key, new ByteTag(1));
   }
 
   world.levelDat.save();
