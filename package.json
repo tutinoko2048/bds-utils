@@ -3,6 +3,19 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "bun@1.4.4",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24",
+      "onFail": "warn"
+    },
+    "packageManager": {
+      "name": "bun",
+      "version": "1.4.4",
+      "onFail": "ignore"
+    }
+  },
   "workspaces": {
     "packages": ["packages/*"],
     "catalog": {

@@ -6,12 +6,8 @@ on:
     tags:
       - 'updater@*'
 
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 permissions:
   contents: write
-  packages: write
   id-token: write
 
 jobs:
@@ -19,91 +15,97 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           fetch-tags: true
 
+      # Node / Bun のバージョンはルートの package.json (devEngines / packageManager) で指定
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version-file: package.json
           registry-url: 'https://registry.npmjs.org'
-
-      - name: Update npm
-        run: |
-          npm install -g npm@latest
-          npm --version
+          # publish するワークフローなのでキャッシュは使わない
+          package-manager-cache: false
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version-file: package.json
 
       - name: Install dependencies
-        run: bun i
+        run: bun install --frozen-lockfile
 
       - name: Read package version
         id: version
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
         run: |
           # タグからバージョンを抽出 (updater@1.2.3 -> 1.2.3)
-          if [ -n "${{ github.ref_name }}" ]; then
-            tag_version="${{ github.ref_name }}"
-            current_version="${tag_version#updater@}"
+          if [ "$REF_TYPE" = "tag" ]; then
+            current_version="${REF_NAME#updater@}"
           else
             # 手動実行の場合はpackage.jsonから取得
             current_version=$(node -p -e "require('./packages/updater-core/package.json').version")
           fi
-          echo "version=$current_version" >> $GITHUB_OUTPUT
-          
+          echo "version=$current_version" >> "$GITHUB_OUTPUT"
+
           # プレリリース版判定
           if [[ $current_version =~ ^[0-9]+\.[0-9]+\.[0-9]+- ]]; then
-            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+            echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
             # プレリリース識別子を抽出 (1.2.3-beta.2 -> beta)
-            prerelease_tag=$(echo $current_version | sed 's/^[0-9]\+\.[0-9]\+\.[0-9]\+-\([a-z]\+\).*/\1/')
-            echo "prerelease_tag=$prerelease_tag" >> $GITHUB_OUTPUT
+            prerelease_tag=$(echo "$current_version" | sed 's/^[0-9]\+\.[0-9]\+\.[0-9]\+-\([a-z]\+\).*/\1/')
+            echo "prerelease_tag=$prerelease_tag" >> "$GITHUB_OUTPUT"
           else
-            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+            echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Publish updater-core
+        working-directory: packages/updater-core
+        env:
+          IS_PRERELEASE: ${{ steps.version.outputs.is_prerelease }}
+          PRERELEASE_TAG: ${{ steps.version.outputs.prerelease_tag }}
         run: |
-          cd packages/updater-core
           bun run build
           bun pm pack
-          if [ "${{ steps.version.outputs.is_prerelease }}" = "true" ]; then
-            npm publish *.tgz --provenance --access public --tag ${{ steps.version.outputs.prerelease_tag }}
+          if [ "$IS_PRERELEASE" = "true" ]; then
+            npm publish *.tgz --provenance --access public --tag "$PRERELEASE_TAG"
           else
             npm publish *.tgz --provenance --access public
           fi
 
       - name: Publish updater-cli
+        working-directory: packages/updater-cli
+        env:
+          IS_PRERELEASE: ${{ steps.version.outputs.is_prerelease }}
+          PRERELEASE_TAG: ${{ steps.version.outputs.prerelease_tag }}
         run: |
-          cd packages/updater-cli
           bun run build
           bun pm pack
-          if [ "${{ steps.version.outputs.is_prerelease }}" = "true" ]; then
-            npm publish *.tgz --provenance --access public --tag ${{ steps.version.outputs.prerelease_tag }}
+          if [ "$IS_PRERELEASE" = "true" ]; then
+            npm publish *.tgz --provenance --access public --tag "$PRERELEASE_TAG"
           else
             npm publish *.tgz --provenance --access public
           fi
 
       - name: Build updater for Windows
-        run: |
-          cd packages/updater-executable
-          bun run compile:windows
+        working-directory: packages/updater-executable
+        run: bun run compile:windows
 
       - name: Build updater for Linux
-        run: |
-          cd packages/updater-executable
-          bun run compile:linux
+        working-directory: packages/updater-executable
+        run: bun run compile:linux
 
       - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
-          gh release create ${{ github.ref_name }} \
-            --title "bds-updater v${{ steps.version.outputs.version }}" \
+          gh release create "$TAG" \
+            --title "bds-updater v$VERSION" \
             --generate-notes \
             packages/updater-executable/build/bds-updater-linux \
             packages/updater-executable/build/bds-updater-windows.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
