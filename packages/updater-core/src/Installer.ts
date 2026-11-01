@@ -68,7 +68,7 @@ export class Installer {
     console.log();
 
     const res = await fetch(url);
-    if (!res.ok) {
+    if (!res.ok || !res.body) {
       throw new Error(`Failed to fetch bedrock server: ${res.status} ${res.statusText}\n${url}`);
     }
 
