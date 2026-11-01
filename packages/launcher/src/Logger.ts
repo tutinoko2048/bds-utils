@@ -1,17 +1,17 @@
-import chalk from 'chalk';
+import pc from 'picocolors';
 import dayjs from 'dayjs';
 
 const c = {
-  black: chalk.black,
-  red: chalk.red,
-  green: chalk.green,
-  yellow: chalk.yellow,
-  blueBright: chalk.blueBright,
-  blue: chalk.blue,
-  magenta: chalk.magenta,
-  cyan: chalk.cyan,
-  white: chalk.white,
-  gray: chalk.gray,
+  black: pc.black,
+  red: pc.red,
+  green: pc.green,
+  yellow: pc.yellow,
+  blueBright: pc.blueBright,
+  blue: pc.blue,
+  magenta: pc.magenta,
+  cyan: pc.cyan,
+  white: pc.white,
+  gray: pc.gray,
 } as const;
 
 export class Logger {

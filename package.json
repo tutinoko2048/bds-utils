@@ -8,7 +8,8 @@
     "catalog": {
       "picocolors": "^1.1.1",
       "@inquirer/prompts": "^8.7.5",
-      "commander": "^15.0.0"
+      "commander": "^15.0.0",
+      "jsonc-parser": "^3.3.1"
     }
   },
   "devDependencies": {

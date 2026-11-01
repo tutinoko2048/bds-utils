@@ -6,7 +6,7 @@
     "test": "bun run src/index.ts"
   },
   "dependencies": {
-    "chalk": "^5.6.2",
+    "picocolors": "catalog:",
     "dayjs": "^1.11.18"
   }
 }

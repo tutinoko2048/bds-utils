@@ -14,7 +14,7 @@
     "commander": "catalog:",
     "compare-versions": "^6.1.0",
     "fs-extra": "^11.4.1",
-    "jsonc": "^2.0.0",
+    "jsonc-parser": "catalog:",
     "ora": "^10.0.0",
     "picocolors": "catalog:",
     "unzip-stream": "^0.3.4"

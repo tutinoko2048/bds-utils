@@ -1,6 +1,6 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { jsonc } from 'jsonc';
+import * as jsonc from 'jsonc-parser';
 
 export interface MergeInfo {
   onFile?: (newPath: string, serverFolder: string) => Promise<string>;
@@ -51,6 +51,6 @@ export const permissionsJsonMerger: MergeInfo = {
     const newPermissions: PermissionsJson = jsonc.parse(newPermissionsFile);
     const oldPermissions: PermissionsJson = jsonc.parse(oldPermissionsFile);
     const allowed_modules = [...new Set([...oldPermissions.allowed_modules, ...newPermissions.allowed_modules])];
-    return jsonc.stringify({ allowed_modules }, { space: 2 });
+    return JSON.stringify({ allowed_modules }, null, 2);
   }
 }

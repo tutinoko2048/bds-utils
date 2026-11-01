@@ -1,6 +1,6 @@
 import ChildProcess from 'node:child_process';
 import * as path from 'node:path';
-import chalk from 'chalk';
+import pc from 'picocolors';
 import { Logger } from './Logger';
 import { StdioHandler } from './StdioHandler';
 
@@ -32,7 +32,7 @@ export abstract class BedrockDedicatedServer {
   }
 
   async start(): Promise<void> {
-    this.logger.log('Starting server at', chalk.blackBright(this.executable))
+    this.logger.log('Starting server at', pc.blackBright(this.executable))
     this.process = ChildProcess.spawn(this.executable, {
       cwd: path.join(process.cwd(), './'),
       stdio: 'pipe',

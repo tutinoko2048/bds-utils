@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import pc from 'picocolors';
 import { EventEmitter } from 'node:events';
 import * as Stream from 'node:stream';
 import readline from 'node:readline';
@@ -63,7 +63,7 @@ export class StdioHandler extends EventEmitter<StdioEventMap> {
           level,
           message,
           type: type ?? 'Server',
-          color: chalk.white//LogLevelColors[level] ?? LogLevelColors.INFO,
+          color: pc.white//LogLevelColors[level] ?? LogLevelColors.INFO,
         }
 
         await this.writeLogLine(log as LogLine)
@@ -81,7 +81,7 @@ export class StdioHandler extends EventEmitter<StdioEventMap> {
       // Multiple same messages
       const lines = this.previous.message.replace(/[^\n]/g, '').length;
       readline.moveCursor(process.stdout, 0, -lines);
-      message = `${chalk.bgCyanBright.black(this.previous.count++)} ${this.previous.message}`;
+      message = `${pc.bgCyanBright(pc.black(this.previous.count++))} ${this.previous.message}`;
     }
     this.readline?.write(`${log.time} ${message}`);
   }
@@ -125,5 +125,5 @@ interface LogLine {
   level: string;
   type: string;
   message: string;
-  color: import('chalk').ChalkInstance;
+  color: (input: string) => string;
 }
